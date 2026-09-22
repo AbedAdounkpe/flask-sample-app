@@ -7,7 +7,7 @@ items = []
 
 @app.route('/')
 def hello():
-    return "Hello, Flask! How are yoou today?"
+    return "Hello, Flask!"
 
 @app.route('/items', methods=['GET'])
 def get_items():
