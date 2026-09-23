@@ -6,12 +6,16 @@ RUN python -m venv /opt/venv
 
 COPY requirements.txt .
 
-RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+# pip is unused at runtime; stripping it removes its CVEs from the shipped image
+RUN /opt/venv/bin/pip install --no-cache-dir -r requirements.txt \
+    && /opt/venv/bin/pip uninstall -y pip
 
 
 FROM python:3.12-slim AS runtime
 
-RUN useradd --create-home --uid 10001 appuser
+# the base image ships its own pip alongside the venv's; both must go
+RUN python -m pip uninstall -y pip \
+    && useradd --create-home --uid 10001 appuser
 
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH" \
