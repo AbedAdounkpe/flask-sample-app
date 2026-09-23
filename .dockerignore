@@ -1,0 +1,16 @@
+.git/
+.gitignore
+venv/
+__pycache__/
+*.pyc
+.env*
+.vscode/
+.idea/
+tests/
+evidence/
+security/
+k8s/
+kind/
+*.md
+*.pdf
+*.png
