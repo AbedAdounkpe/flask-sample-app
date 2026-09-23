@@ -90,6 +90,59 @@ abedadounkpe/msc-de1-flask-app   latest   sha256:5fdab24f6872a3eea9819be13785570
 
 Both tags resolve to the same digest, confirming `1.0.0` and `latest` are the same build.
 
+### Pull and run the published image
+
+No clone or build is required — these commands run the exact published image.
+
+1. **Pull the image** (works without logging in, the repository is public):
+
+   ```bash
+   docker pull abedadounkpe/msc-de1-flask-app:1.0.0
+   ```
+
+2. **Run the container**, publishing container port 8000 on host port 8000:
+
+   ```bash
+   docker run -d -p 8000:8000 --name msc-de1-flask-app abedadounkpe/msc-de1-flask-app:1.0.0
+   ```
+
+   To run it with the same hardening applied in `compose.yaml` (non-root user, no
+   capabilities, no privilege escalation, read-only root filesystem with a writable tmpfs
+   for gunicorn's worker heartbeats, and CPU/memory limits):
+
+   ```bash
+   docker run -d -p 8000:8000 --name msc-de1-flask-app \
+     --user 10001:10001 \
+     --cap-drop ALL \
+     --security-opt no-new-privileges:true \
+     --read-only --tmpfs /tmp \
+     --cpus 0.50 --memory 256m \
+     abedadounkpe/msc-de1-flask-app:1.0.0
+   ```
+
+3. **Verify it is serving:**
+
+   ```bash
+   curl http://localhost:8000/
+   curl http://localhost:8000/items
+   ```
+
+   Or open [http://localhost:8000](http://localhost:8000) in a browser.
+
+4. **Inspect logs / stop and clean up:**
+
+   ```bash
+   docker logs msc-de1-flask-app
+   docker stop msc-de1-flask-app
+   docker rm msc-de1-flask-app
+   ```
+
+Alternatively, if you have the repository checked out, `docker compose up -d` starts the
+same image with all of the above settings already declared in `compose.yaml`.
+
+> **Note:** the container listens on port **8000** (gunicorn), not 5000. Port 5000 is only
+> used by the Flask development server when running `python run.py` locally.
+
 ## Application Routes
 
 The application provides the following routes:
