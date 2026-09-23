@@ -65,6 +65,7 @@ filesystem, with a writable `emptyDir` at `/tmp` for gunicorn's worker heartbeat
 │   └── kind-config.yaml  3-node cluster (1 control-plane, 2 workers)
 ├── k8s/
 │   ├── namespace.yaml    Namespace msc-de1-project
+│   ├── configmap.yaml    Non-secret environment configuration
 │   ├── deployment.yaml   2 replicas, probes, resources, RollingUpdate, securityContext
 │   ├── service.yaml      ClusterIP :80 → container :8000
 │   └── network-policy.yaml  default-deny ingress + allow TCP 8000
@@ -317,8 +318,8 @@ docker exec msc-de1-worker crictl images | grep flask
 
 ## 9. Deploying the Kubernetes manifests
 
-Four manifests live in [`k8s/`](k8s). Apply the namespace **first** — `kubectl apply -f k8s/`
-does not guarantee ordering within a directory, and the other three all declare
+Five manifests live in [`k8s/`](k8s). Apply the namespace **first** — `kubectl apply -f k8s/`
+does not guarantee ordering within a directory, and the others all declare
 `namespace: msc-de1-project`:
 
 ```bash
@@ -329,9 +330,16 @@ kubectl apply -f k8s/
 | Manifest | Contents |
 |---|---|
 | `namespace.yaml` | Namespace `msc-de1-project`, so the NetworkPolicies are scoped to this project only |
+| `configmap.yaml` | `flask-app-config`: `APP_ENV` and `PYTHONUNBUFFERED`, injected with `envFrom` so configuration is separate from the Deployment |
 | `deployment.yaml` | 2 replicas, `imagePullPolicy: IfNotPresent`, named port `http` (8000), readiness + liveness probes, CPU/memory requests and limits, `RollingUpdate` (`maxSurge: 1`, `maxUnavailable: 0`), full `securityContext`, `emptyDir` at `/tmp` |
 | `service.yaml` | `ClusterIP` on port 80 → `targetPort: http` (8000) |
 | `network-policy.yaml` | `default-deny-ingress` for all pods, plus `allow-flask-app-http` on TCP 8000 |
+
+> **Selector design.** All selectors match on `app.kubernetes.io/name` only. The
+> `app.kubernetes.io/version` label is applied to the pod template but deliberately kept
+> *out* of `spec.selector.matchLabels`, which is immutable once created — including it would
+> make a `1.0.0 → 1.1.0` rolling update impossible without deleting the Deployment, and
+> would break the Service and NetworkPolicy selectors mid-rollout.
 
 Check the rollout and where the pods landed:
 
@@ -437,6 +445,8 @@ which is exactly where inconsistencies creep in, so the mapping is explicit:
 | Read-only root filesystem | — | `read_only: true` | `readOnlyRootFilesystem: true` |
 | Writable `/tmp` only | — | `tmpfs: [/tmp]` | `emptyDir` at `/tmp` |
 | Syscall filtering | — | Docker default seccomp (implicit) | `seccompProfile: RuntimeDefault` (explicit) |
+| No API credentials in pod | — | — | `automountServiceAccountToken: false` |
+| No host namespace sharing | — | (not shared by default) | `hostNetwork/hostPID/hostIPC: false` |
 | Resource ceiling | — | `deploy.resources.limits` | `resources.limits` |
 | Health checking | `HEALTHCHECK` | `healthcheck:` | readiness + liveness probes |
 
@@ -456,6 +466,25 @@ Other decisions worth recording:
   rather than passed with `-p`, so it never enters shell history. No credentials are in the
   repository.
 - **Default-deny NetworkPolicy** in the namespace, with a single allow rule for TCP 8000.
+- **No Kubernetes Secret is used, because the application handles no credentials.** There is
+  no database, no external API and no authentication anywhere in the app, so the only
+  configuration it needs is `APP_ENV` and `PYTHONUNBUFFERED` — both non-sensitive, and both
+  correctly placed in a ConfigMap. Creating an empty Secret purely to tick a box would be
+  worse than not having one: it adds a mounted credential path to protect for no benefit.
+  If a credential were introduced later (say a database password), it would be created
+  out-of-band and never committed:
+
+  ```bash
+  kubectl create secret generic flask-app-secrets \
+    --namespace msc-de1-project \
+    --from-literal=DB_PASSWORD='<value>'
+  ```
+
+  and consumed the same way the ConfigMap is, with `envFrom.secretRef` (or a mounted volume,
+  which picks up rotations without a pod restart). Only a redacted template —
+  `k8s/secret.example.yaml` with placeholder values — would be committed, since a Secret
+  manifest stores its data as base64, which is encoding rather than encryption and offers no
+  protection in version control.
 
 ### Known limitations
 
