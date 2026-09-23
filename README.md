@@ -58,6 +58,38 @@ To get the Flask app up and running on your local machine, follow these steps:
 
    This command will discover and run all tests in the `tests` directory.
 
+## Published Container Image
+
+The application image is published publicly on Docker Hub:
+
+| | |
+|---|---|
+| Repository | [`abedadounkpe/msc-de1-flask-app`](https://hub.docker.com/r/abedadounkpe/msc-de1-flask-app) |
+| Tag | `1.0.0` |
+| Digest | `sha256:5fdab24f6872a3eea9819be137855708107d79a00329df96d7df66e8a5d7ee45` |
+| Image ID | `fe5c693b2f05` |
+| Size | 130 MB |
+
+Pull by digest to guarantee you get this exact build (a tag can be moved to point at a
+different image later; the digest is a hash of the image content and cannot be):
+
+```bash
+docker pull abedadounkpe/msc-de1-flask-app@sha256:5fdab24f6872a3eea9819be137855708107d79a00329df96d7df66e8a5d7ee45
+```
+
+The digest was captured locally with:
+
+```bash
+docker images --digests | findstr msc-de1-flask-app
+```
+
+```text
+abedadounkpe/msc-de1-flask-app   1.0.0    sha256:5fdab24f6872a3eea9819be137855708107d79a00329df96d7df66e8a5d7ee45   fe5c693b2f05   130MB
+abedadounkpe/msc-de1-flask-app   latest   sha256:5fdab24f6872a3eea9819be137855708107d79a00329df96d7df66e8a5d7ee45   fe5c693b2f05   130MB
+```
+
+Both tags resolve to the same digest, confirming `1.0.0` and `latest` are the same build.
+
 ## Application Routes
 
 The application provides the following routes:
