@@ -18,7 +18,6 @@ spec:
   podSelector:
     matchLabels:
       app.kubernetes.io/name: flask-app
-      app.kubernetes.io/version: "1.0.0"
   policyTypes:
     - Ingress
   ingress:

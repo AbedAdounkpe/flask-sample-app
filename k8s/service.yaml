@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/version: "1.0.0"
 spec:
   type: ClusterIP
+  # name only: the selector must keep matching pods after the version label changes
   selector:
     app.kubernetes.io/name: flask-app
-    app.kubernetes.io/version: "1.0.0"
   ports:
     - name: http
       protocol: TCP

@@ -15,10 +15,11 @@ spec:
       maxSurge: 1
       maxUnavailable: 0
 
+  # version is deliberately NOT in the selector: selectors are immutable, so it must stay
+  # stable across the 1.0.0 -> 1.1.0 rolling update
   selector:
     matchLabels:
       app.kubernetes.io/name: flask-app
-      app.kubernetes.io/version: "1.0.0"
 
   template:
     metadata:
@@ -26,6 +27,11 @@ spec:
         app.kubernetes.io/name: flask-app
         app.kubernetes.io/version: "1.0.0"
     spec:
+      automountServiceAccountToken: false
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
@@ -44,11 +50,9 @@ spec:
               containerPort: 8000
               protocol: TCP
 
-          env:
-            - name: APP_ENV
-              value: production
-            - name: PYTHONUNBUFFERED
-              value: "1"
+          envFrom:
+            - configMapRef:
+                name: flask-app-config
 
           # no /health route exists, so both probes use the index route
           readinessProbe:

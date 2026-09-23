@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-app-config
+  namespace: msc-de1-project
+  labels:
+    app.kubernetes.io/name: flask-app
+    app.kubernetes.io/version: "1.0.0"
+data:
+  APP_ENV: "production"
+  PYTHONUNBUFFERED: "1"
