@@ -1,0 +1,127 @@
+﻿===== 1. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-f8g8s   1/1     Running   0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running   0          92s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 2. kubectl get pod <name> restartCount =====
+0
+===== 3. kubectl exec kill PID 1 =====
+===== 4a. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-f8g8s   1/1     Running   0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running   0          92s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 4b. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-f8g8s   1/1     Running   0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running   0          93s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 4c. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-f8g8s   1/1     Running   0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running   0          93s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 5a. kubectl get pod <name> restartCount =====
+0
+===== 5b. kubectl describe pod <name> filtered =====
+      Started:      Wed, 23 Sep 2026 21:10:45 +0200
+    Restart Count:  0
+  Type    Reason     Age   From               Message
+  Normal  Started    15m   kubelet            spec.containers{flask-app}: Container started
+===== 6a. kubectl wait deployment available =====
+deployment.apps/flask-app condition met
+===== 6b. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-f8g8s   1/1     Running   0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running   0          94s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 7. kubectl scale deployment/flask-app --replicas=4 =====
+deployment.apps/flask-app scaled
+===== 8a. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS              RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-9qcfx   0/1     ContainerCreating   0          0s    <none>       msc-de1-worker    <none>           <none>
+flask-app-667ff94dd9-f8g8s   1/1     Running             0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-rdxsd   0/1     ContainerCreating   0          0s    <none>       msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running             0          94s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 8b. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS              RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-9qcfx   0/1     ContainerCreating   0          0s    <none>       msc-de1-worker    <none>           <none>
+flask-app-667ff94dd9-f8g8s   1/1     Running             0          15m   10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-rdxsd   0/1     ContainerCreating   0          0s    <none>       msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running             0          94s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 9. kubectl wait deployment available =====
+deployment.apps/flask-app condition met
+===== 10. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS    RESTARTS   AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-9qcfx   1/1     Running   0          6s     10.244.1.8   msc-de1-worker    <none>           <none>
+flask-app-667ff94dd9-f8g8s   1/1     Running   0          15m    10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-rdxsd   1/1     Running   0          6s     10.244.2.5   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running   0          100s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 11. kubectl get endpoints flask-app =====
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME        ENDPOINTS                                                     AGE
+flask-app   10.244.1.7:8000,10.244.1.8:8000,10.244.2.4:8000 + 1 more...   114m
+===== 12. kubectl get deployment flask-app =====
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+flask-app   4/4     4            4           15m
+===== 13a. kubectl scale deployment/flask-app --replicas=2 =====
+deployment.apps/flask-app scaled
+===== 13b. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS        RESTARTS   AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-9qcfx   1/1     Terminating   0          7s     10.244.1.8   msc-de1-worker    <none>           <none>
+flask-app-667ff94dd9-f8g8s   1/1     Running       0          15m    10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-rdxsd   1/1     Terminating   0          7s     10.244.2.5   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running       0          101s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 13c. kubectl get pods -n msc-de1-project -o wide =====
+NAME                         READY   STATUS        RESTARTS   AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-667ff94dd9-9qcfx   1/1     Terminating   0          7s     10.244.1.8   msc-de1-worker    <none>           <none>
+flask-app-667ff94dd9-f8g8s   1/1     Running       0          15m    10.244.2.4   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-rdxsd   1/1     Terminating   0          7s     10.244.2.5   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-tjs4c   1/1     Running       0          101s   10.244.1.7   msc-de1-worker    <none>           <none>
+===== 13d. kubectl get endpoints flask-app =====
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME        ENDPOINTS                         AGE
+flask-app   10.244.1.7:8000,10.244.2.4:8000   114m
+===== 14. kubectl get events =====
+LAST SEEN   TYPE     REASON              OBJECT                            MESSAGE
+41m         Normal   Scheduled           pod/np-test                       Successfully assigned msc-de1-project/np-test to msc-de1-worker
+41m         Normal   Pulling             pod/np-test                       Pulling image "busybox:1.36"
+39m         Normal   Pulled              pod/np-test                       Successfully pulled image "busybox:1.36" in 1m42.043s (1m42.043s including waiting). Image size: 2217006 bytes.
+39m         Normal   Created             pod/np-test                       Container created
+39m         Normal   Started             pod/np-test                       Container started
+37m         Normal   Killing             pod/np-test                       Stopping container np-test
+36m         Normal   Scheduled           pod/np-test                       Successfully assigned msc-de1-project/np-test to msc-de1-worker
+36m         Normal   Pulled              pod/np-test                       Container image "busybox:1.36" already present on machine and can be accessed by the pod
+36m         Normal   Started             pod/np-test                       Container started
+36m         Normal   Created             pod/np-test                       Container created
+34m         Normal   Killing             pod/np-test                       Stopping container np-test
+15m         Normal   Killing             pod/flask-app-58b87bf764-c8xl4    Stopping container flask-app
+15m         Normal   Killing             pod/flask-app-58b87bf764-zzbjx    Stopping container flask-app
+15m         Normal   SuccessfulCreate    replicaset/flask-app-667ff94dd9   Created pod: flask-app-667ff94dd9-9rh5g
+15m         Normal   Created             pod/flask-app-667ff94dd9-f8g8s    Container created
+15m         Normal   Pulled              pod/flask-app-667ff94dd9-f8g8s    Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+15m         Normal   Scheduled           pod/flask-app-667ff94dd9-f8g8s    Successfully assigned msc-de1-project/flask-app-667ff94dd9-f8g8s to msc-de1-worker2
+15m         Normal   Scheduled           pod/flask-app-667ff94dd9-9rh5g    Successfully assigned msc-de1-project/flask-app-667ff94dd9-9rh5g to msc-de1-worker
+15m         Normal   Created             pod/flask-app-667ff94dd9-9rh5g    Container created
+15m         Normal   ScalingReplicaSet   deployment/flask-app              Scaled up replica set flask-app-667ff94dd9 from 0 to 2
+15m         Normal   Pulled              pod/flask-app-667ff94dd9-9rh5g    Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+15m         Normal   SuccessfulCreate    replicaset/flask-app-667ff94dd9   Created pod: flask-app-667ff94dd9-f8g8s
+15m         Normal   Started             pod/flask-app-667ff94dd9-f8g8s    Container started
+15m         Normal   Started             pod/flask-app-667ff94dd9-9rh5g    Container started
+102s        Normal   Pulled              pod/flask-app-667ff94dd9-tjs4c    Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+102s        Normal   Created             pod/flask-app-667ff94dd9-tjs4c    Container created
+102s        Normal   SuccessfulCreate    replicaset/flask-app-667ff94dd9   Created pod: flask-app-667ff94dd9-tjs4c
+102s        Normal   Killing             pod/flask-app-667ff94dd9-9rh5g    Stopping container flask-app
+102s        Normal   Scheduled           pod/flask-app-667ff94dd9-tjs4c    Successfully assigned msc-de1-project/flask-app-667ff94dd9-tjs4c to msc-de1-worker
+101s        Normal   Started             pod/flask-app-667ff94dd9-tjs4c    Container started
+8s          Normal   ScalingReplicaSet   deployment/flask-app              Scaled up replica set flask-app-667ff94dd9 from 2 to 4
+8s          Normal   Scheduled           pod/flask-app-667ff94dd9-9qcfx    Successfully assigned msc-de1-project/flask-app-667ff94dd9-9qcfx to msc-de1-worker
+8s          Normal   SuccessfulCreate    replicaset/flask-app-667ff94dd9   Created pod: flask-app-667ff94dd9-9qcfx
+8s          Normal   Started             pod/flask-app-667ff94dd9-9qcfx    Container started
+8s          Normal   Pulled              pod/flask-app-667ff94dd9-9qcfx    Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+8s          Normal   Created             pod/flask-app-667ff94dd9-9qcfx    Container created
+8s          Normal   Started             pod/flask-app-667ff94dd9-rdxsd    Container started
+8s          Normal   Created             pod/flask-app-667ff94dd9-rdxsd    Container created
+8s          Normal   Pulled              pod/flask-app-667ff94dd9-rdxsd    Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+8s          Normal   Scheduled           pod/flask-app-667ff94dd9-rdxsd    Successfully assigned msc-de1-project/flask-app-667ff94dd9-rdxsd to msc-de1-worker2
+8s          Normal   SuccessfulCreate    replicaset/flask-app-667ff94dd9   Created pod: flask-app-667ff94dd9-rdxsd
+1s          Normal   SuccessfulDelete    replicaset/flask-app-667ff94dd9   Deleted pod: flask-app-667ff94dd9-9qcfx
+1s          Normal   Killing             pod/flask-app-667ff94dd9-9qcfx    Stopping container flask-app
+1s          Normal   Killing             pod/flask-app-667ff94dd9-rdxsd    Stopping container flask-app
+1s          Normal   ScalingReplicaSet   deployment/flask-app              Scaled down replica set flask-app-667ff94dd9 from 4 to 2
+1s          Normal   SuccessfulDelete    replicaset/flask-app-667ff94dd9   Deleted pod: flask-app-667ff94dd9-rdxsd
