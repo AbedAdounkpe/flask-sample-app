@@ -1,0 +1,71 @@
+﻿
+===== E1 replicasets (image per revision) =====
+NAME                   DESIRED   CURRENT   READY   AGE    CONTAINERS   IMAGES                                 SELECTOR
+flask-app-594fbc98d    2         2         2       114s   flask-app    abedadounkpe/msc-de1-flask-app:1.1.0   app.kubernetes.io/name=flask-app,pod-template-hash=594fbc98d
+flask-app-667ff94dd9   0         0         0       4m     flask-app    abedadounkpe/msc-de1-flask-app:1.0.0   app.kubernetes.io/name=flask-app,pod-template-hash=667ff94dd9
+flask-app-6b64b49477   1         1         0       100s   flask-app    abedadounkpe/msc-de1-flask-app:9.9.9   app.kubernetes.io/name=flask-app,pod-template-hash=6b64b49477
+
+===== E2 rollout history =====
+deployment.apps/flask-app 
+REVISION  CHANGE-CAUSE
+1         rolling update to 1.1.0
+2         bad tag 9.9.9 (deliberate failure)
+3         bad tag 9.9.9 (deliberate failure)
+
+===== E3 deployment status during failed rollout =====
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+flask-app   2/2     1            2           4m
+
+===== E4 pods during failed rollout =====
+NAME                         READY   STATUS             RESTARTS      AGE     IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    1/1     Running            1 (35s ago)   115s    10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running            0             108s    10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     ImagePullBackOff   0             101s    10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running            0             2m10s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+===== E5 rollout status (expected to fail) =====
+Waiting for deployment "flask-app" rollout to finish: 1 out of 2 new replicas have been updated...
+kubectl : error: timed out waiting for the condition
+Au caractère C:\Users\JD6610\AppData\Local\Temp\de1-partE1.ps1:16 : 46
++ ... to fail)' { kubectl rollout status deployment/flask-app -n $ns --time ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (error: timed ou...r the condition    :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+POD / WAITING REASON:
+
+
+POD / IMAGE:
+
+
+===== E6 describe failing pod (filtered) =====
+
+    Image:          abedadounkpe/msc-de1-flask-app:9.9.9
+      Reason:       ErrImagePull
+
+===== E7 endpoints during failed rollout =====
+kubectl : Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+Au caractère C:\Users\JD6610\AppData\Local\Temp\de1-partE1.ps1:25 : 44
++ ... nts during failed rollout' { kubectl get endpoints flask-app -n $ns }
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: v1 End...1 EndpointSlice    :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+NAME        ENDPOINTS                         AGE
+flask-app   10.244.1.3:8000,10.244.2.4:8000   4m22s
+
+===== E8 deployment conditions =====
+kubectl : error: error parsing jsonpath {range .status.conditions[*]}{.type}={.status} {.reason}: {.message}{\n}{end}, unrecognized character in action: U+005C '\'
+Au caractère C:\Users\JD6610\AppData\Local\Temp\de1-partE1.ps1:26 : 34
++ ... nditions' { kubectl get deployment flask-app -n $ns -o jsonpath='{ran ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (error: error pa...ion: U+005C '\'    :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+===== E9 availability probe (before rollback) =====
+total lines: 528  OK: 520  FAIL: 4
+
+19:43:43 FAIL
+19:43:45 FAIL
+19:43:49 FAIL
+19:44:57 FAIL

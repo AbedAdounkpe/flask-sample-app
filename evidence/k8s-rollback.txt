@@ -1,0 +1,158 @@
+﻿
+===== F0 events before rollback (timestamps) =====
+TIME                   REASON              OBJECT                       MSG
+2026-09-23T19:41:30Z   SuccessfulCreate    flask-app-667ff94dd9         Created pod: flask-app-667ff94dd9-vj6tv
+2026-09-23T19:41:30Z   Scheduled           flask-app-667ff94dd9-vj6tv   Successfully assigned msc-de1-project/flask-app-667ff94dd9-vj6tv to msc-de1-worker2
+2026-09-23T19:41:30Z   Scheduled           flask-app-667ff94dd9-rhczz   Successfully assigned msc-de1-project/flask-app-667ff94dd9-rhczz to msc-de1-worker
+2026-09-23T19:41:30Z   SuccessfulCreate    flask-app-667ff94dd9         Created pod: flask-app-667ff94dd9-rhczz
+2026-09-23T19:41:30Z   ScalingReplicaSet   flask-app                    Scaled up replica set flask-app-667ff94dd9 from 0 to 2
+2026-09-23T19:41:31Z   Created             flask-app-667ff94dd9-vj6tv   Container created
+2026-09-23T19:41:31Z   Pulled              flask-app-667ff94dd9-vj6tv   Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+2026-09-23T19:41:31Z   Started             flask-app-667ff94dd9-vj6tv   Container started
+2026-09-23T19:43:15Z   Pulled              flask-app-667ff94dd9-rhczz   Container image "abedadounkpe/msc-de1-flask-app:1.0.0" already present on machine and can be accessed by the pod
+2026-09-23T19:43:15Z   Created             flask-app-667ff94dd9-rhczz   Container created
+2026-09-23T19:43:15Z   Started             flask-app-667ff94dd9-rhczz   Container started
+2026-09-23T19:43:21Z   Scheduled           probe                        Successfully assigned msc-de1-project/probe to msc-de1-worker
+2026-09-23T19:43:22Z   Pulling             probe                        Pulling image "busybox:1.36"
+2026-09-23T19:43:35Z   Pulled              probe                        Successfully pulled image "busybox:1.36" in 13.29s (13.29s including waiting). Image size: 2217006 bytes.
+2026-09-23T19:43:35Z   Created             probe                        Container created
+2026-09-23T19:43:35Z   Started             probe                        Container started
+2026-09-23T19:43:36Z   SuccessfulCreate    flask-app-594fbc98d          Created pod: flask-app-594fbc98d-bwcbf
+2026-09-23T19:43:36Z   ScalingReplicaSet   flask-app                    Scaled up replica set flask-app-594fbc98d from 0 to 1
+2026-09-23T19:43:36Z   Scheduled           flask-app-594fbc98d-bwcbf    Successfully assigned msc-de1-project/flask-app-594fbc98d-bwcbf to msc-de1-worker2
+2026-09-23T19:43:43Z   Killing             flask-app-667ff94dd9-vj6tv   Stopping container flask-app
+2026-09-23T19:43:43Z   Created             flask-app-594fbc98d-qxvwp    Container created
+2026-09-23T19:43:43Z   SuccessfulCreate    flask-app-594fbc98d          Created pod: flask-app-594fbc98d-qxvwp
+2026-09-23T19:43:43Z   Started             flask-app-594fbc98d-qxvwp    Container started
+2026-09-23T19:43:43Z   SuccessfulDelete    flask-app-667ff94dd9         Deleted pod: flask-app-667ff94dd9-vj6tv
+2026-09-23T19:43:43Z   Scheduled           flask-app-594fbc98d-qxvwp    Successfully assigned msc-de1-project/flask-app-594fbc98d-qxvwp to msc-de1-worker
+2026-09-23T19:43:43Z   ScalingReplicaSet   flask-app                    Scaled up replica set flask-app-594fbc98d from 1 to 2
+2026-09-23T19:43:43Z   ScalingReplicaSet   flask-app                    Scaled down replica set flask-app-667ff94dd9 from 2 to 1
+2026-09-23T19:43:43Z   Pulled              flask-app-594fbc98d-qxvwp    Container image "abedadounkpe/msc-de1-flask-app:1.1.0" already present on machine and can be accessed by the pod
+2026-09-23T19:43:49Z   SuccessfulDelete    flask-app-667ff94dd9         Deleted pod: flask-app-667ff94dd9-rhczz
+2026-09-23T19:43:49Z   Killing             flask-app-667ff94dd9-rhczz   Stopping container flask-app
+2026-09-23T19:43:49Z   ScalingReplicaSet   flask-app                    Scaled down replica set flask-app-667ff94dd9 from 1 to 0
+2026-09-23T19:43:50Z   Scheduled           flask-app-6b64b49477-5h6ls   Successfully assigned msc-de1-project/flask-app-6b64b49477-5h6ls to msc-de1-worker2
+2026-09-23T19:43:50Z   SuccessfulCreate    flask-app-6b64b49477         Created pod: flask-app-6b64b49477-5h6ls
+2026-09-23T19:43:50Z   ScalingReplicaSet   flask-app                    Scaled up replica set flask-app-6b64b49477 from 0 to 1
+2026-09-23T19:44:56Z   Unhealthy           flask-app-594fbc98d-bwcbf    Liveness probe failed: Get "http://10.244.1.3:8000/": dial tcp 10.244.1.3:8000: connect: connection refused
+2026-09-23T19:44:57Z   Started             flask-app-594fbc98d-bwcbf    Container started
+2026-09-23T19:44:57Z   Created             flask-app-594fbc98d-bwcbf    Container created
+2026-09-23T19:44:57Z   Pulled              flask-app-594fbc98d-bwcbf    Container image "abedadounkpe/msc-de1-flask-app:1.1.0" already present on machine and can be accessed by the pod
+2026-09-23T19:45:30Z   Pulling             flask-app-6b64b49477-5h6ls   Pulling image "abedadounkpe/msc-de1-flask-app:9.9.9"
+2026-09-23T19:45:34Z   Failed              flask-app-6b64b49477-5h6ls   Error: ErrImagePull
+2026-09-23T19:45:34Z   Failed              flask-app-6b64b49477-5h6ls   Failed to pull image "abedadounkpe/msc-de1-flask-app:9.9.9": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/abedadounkpe/msc-de1-flask-app:9.9.9": failed to resolve reference "docker.io/abedadounkpe/msc-de1-flask-app:9.9.9": docker.io/abedadounkpe/msc-de1-flask-app:9.9.9: not found
+2026-09-23T19:46:28Z   Failed              flask-app-6b64b49477-5h6ls   Error: ImagePullBackOff
+2026-09-23T19:46:28Z   BackOff             flask-app-6b64b49477-5h6ls   Back-off pulling image "abedadounkpe/msc-de1-flask-app:9.9.9"
+
+===== F1 rollout undo =====
+kubectl : Warning: resource deployments/flask-app was previously managed with 'kubectl apply'. Rolling back will not update the kubectl.kubernetes.io/last-applied-configuration annotation, which may 
+cause unexpected behavior on future 'kubectl apply' operations. Consider using 'kubectl apply' with your previous configuration file instead.
+Au caractère C:\Users\JD6610\AppData\Local\Temp\de1-partE2.ps1:13 : 25
++ ... F1 rollout undo' { kubectl rollout undo deployment/flask-app -n $ns }
++                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: resour...n file instead.    :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+deployment.apps/flask-app rolled back
+
+===== F2 rollout status =====
+deployment "flask-app" successfully rolled out
+
+===== F3 pods after rollback =====
+NAME                         READY   STATUS        RESTARTS       AGE     IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    1/1     Running       1 (102s ago)   3m2s    10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running       0              2m55s   10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     Terminating   0              2m48s   10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running       0              3m17s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+===== F4 image after rollback =====
+abedadounkpe/msc-de1-flask-app:1.1.0
+
+===== F5 rollout history after undo =====
+deployment.apps/flask-app 
+REVISION  CHANGE-CAUSE
+1         rolling update to 1.1.0
+3         bad tag 9.9.9 (deliberate failure)
+4         bad tag 9.9.9 (deliberate failure)
+
+===== F6 replicasets after undo =====
+NAME                   DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES                                 SELECTOR
+flask-app-594fbc98d    2         2         2       3m3s    flask-app    abedadounkpe/msc-de1-flask-app:1.1.0   app.kubernetes.io/name=flask-app,pod-template-hash=594fbc98d
+flask-app-667ff94dd9   0         0         0       5m9s    flask-app    abedadounkpe/msc-de1-flask-app:1.0.0   app.kubernetes.io/name=flask-app,pod-template-hash=667ff94dd9
+flask-app-6b64b49477   0         0         0       2m49s   flask-app    abedadounkpe/msc-de1-flask-app:9.9.9   app.kubernetes.io/name=flask-app,pod-template-hash=6b64b49477
+
+===== F7 endpoints after rollback =====
+kubectl : Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+Au caractère C:\Users\JD6610\AppData\Local\Temp\de1-partE2.ps1:19 : 37
++ ...  endpoints after rollback' { kubectl get endpoints flask-app -n $ns }
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: v1 End...1 EndpointSlice    :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+NAME        ENDPOINTS                         AGE
+flask-app   10.244.1.3:8000,10.244.2.4:8000   5m9s
+
+===== F8 deployment =====
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+flask-app   2/2     2            2           5m9s
+
+===== F9 availability probe (whole run) =====
+total requests: 713  OK: 705  FAIL: 4
+first line: 19:43:35 OK   last line: 19:46:39 OK
+
+19:43:43 FAIL
+19:43:45 FAIL
+19:43:49 FAIL
+19:44:57 FAIL
+
+===== F10 restore manifest version 1.0.0 (undo --to-revision=1) =====
+kubectl : Warning: resource deployments/flask-app was previously managed with 'kubectl apply'. Rolling back will not update the kubectl.kubernetes.io/last-applied-configuration annotation, which may 
+cause unexpected behavior on future 'kubectl apply' operations. Consider using 'kubectl apply' with your previous configuration file instead.
+Au caractère C:\Users\JD6610\AppData\Local\Temp\de1-partE2.ps1:30 : 67
++ ... ision=1)' { kubectl rollout undo deployment/flask-app -n $ns --to-rev ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: resour...n file instead.    :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+deployment.apps/flask-app rolled back
+
+===== F11 rollout status =====
+Waiting for deployment "flask-app" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "flask-app" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "flask-app" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "flask-app" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "flask-app" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "flask-app" rollout to finish: 1 old replicas are pending termination...
+deployment "flask-app" successfully rolled out
+
+===== F12 final image =====
+abedadounkpe/msc-de1-flask-app:1.0.0
+
+===== F13 final pods =====
+NAME                         READY   STATUS        RESTARTS   AGE     IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-qxvwp    1/1     Terminating   0          3m9s    10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-667ff94dd9-5c4r2   1/1     Running       0          12s     10.244.1.5   msc-de1-worker2   <none>           <none>
+flask-app-667ff94dd9-dqcq6   1/1     Running       0          6s      10.244.2.5   msc-de1-worker    <none>           <none>
+probe                        1/1     Running       0          3m31s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+===== F14 final history =====
+deployment.apps/flask-app 
+REVISION  CHANGE-CAUSE
+3         bad tag 9.9.9 (deliberate failure)
+4         bad tag 9.9.9 (deliberate failure)
+5         rolling update to 1.1.0
+
+===== F15 availability probe (final) =====
+total requests: 760  OK: 746  FAIL: 7
+
+19:43:43 FAIL
+19:43:45 FAIL
+19:43:49 FAIL
+19:44:57 FAIL
+19:46:46 FAIL
+19:46:49 FAIL
+19:46:52 FAIL
+
+===== F16 delete probe pod =====
+pod "probe" deleted from msc-de1-project namespace

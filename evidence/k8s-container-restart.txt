@@ -1,0 +1,60 @@
+﻿
+===== B1 kubectl get pods -o wide =====
+NAME                         READY   STATUS         RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    1/1     Running        0          79s   10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running        0          72s   10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     ErrImagePull   0          65s   10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running        0          94s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+SELECTED POD: flask-app-594fbc98d-bwcbf
+
+===== B2 restartCount before =====
+0
+
+===== B3 exec: os.kill(1, SIGTERM) =====
+
+
+===== B4a get pods =====
+NAME                         READY   STATUS         RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    1/1     Running        0          80s   10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running        0          73s   10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     ErrImagePull   0          66s   10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running        0          95s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+===== B4b get pods =====
+NAME                         READY   STATUS         RESTARTS     AGE   IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    0/1     Running        1 (2s ago)   82s   10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running        0            75s   10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     ErrImagePull   0            68s   10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running        0            97s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+===== B4c get pods =====
+NAME                         READY   STATUS         RESTARTS     AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    0/1     Running        1 (6s ago)   86s    10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running        0            79s    10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     ErrImagePull   0            72s    10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running        0            101s   10.244.2.3   msc-de1-worker    <none>           <none>
+
+===== B5 restartCount after =====
+1
+
+===== B6 describe pod (filtered) =====
+
+      Started:      Wed, 23 Sep 2026 21:44:57 +0200
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Wed, 23 Sep 2026 21:43:37 +0200
+      Finished:     Wed, 23 Sep 2026 21:44:56 +0200
+    Restart Count:  1
+  Type     Reason     Age               From               Message
+
+===== B7 wait available =====
+deployment.apps/flask-app condition met
+
+===== B7 get pods final =====
+NAME                         READY   STATUS         RESTARTS     AGE    IP           NODE              NOMINATED NODE   READINESS GATES
+flask-app-594fbc98d-bwcbf    1/1     Running        1 (7s ago)   87s    10.244.1.3   msc-de1-worker2   <none>           <none>
+flask-app-594fbc98d-qxvwp    1/1     Running        0            80s    10.244.2.4   msc-de1-worker    <none>           <none>
+flask-app-6b64b49477-5h6ls   0/1     ErrImagePull   0            73s    10.244.1.4   msc-de1-worker2   <none>           <none>
+probe                        1/1     Running        0            102s   10.244.2.3   msc-de1-worker    <none>           <none>
