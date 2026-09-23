@@ -143,6 +143,94 @@ same image with all of the above settings already declared in `compose.yaml`.
 > **Note:** the container listens on port **8000** (gunicorn), not 5000. Port 5000 is only
 > used by the Flask development server when running `python run.py` locally.
 
+## Running on Kubernetes (kind)
+
+The repository includes [`kind/kind-config.yaml`](kind/kind-config.yaml), which defines a
+local cluster with one control-plane node and two workers. Requires
+[kind](https://kind.sigs.k8s.io/) and `kubectl`, with Docker Desktop running.
+
+### 1. Create the cluster
+
+```bash
+kind create cluster --name msc-de1 --config kind/kind-config.yaml
+kubectl cluster-info --context kind-msc-de1
+kubectl get nodes
+```
+
+You should see three nodes in `Ready` state.
+
+### 2. Make the image available to the cluster
+
+kind nodes have their own image store and cannot see the local Docker daemon's images, so
+the image must be side-loaded (this also avoids a round trip to Docker Hub):
+
+```bash
+kind load docker-image abedadounkpe/msc-de1-flask-app:1.0.0 --name msc-de1
+```
+
+Because the tag is not `:latest`, the default pull policy is `IfNotPresent`, so the
+side-loaded image is used rather than being re-pulled.
+
+### 3. Deploy and expose the app
+
+```bash
+kubectl create deployment flask-app --image=abedadounkpe/msc-de1-flask-app:1.0.0 --replicas=3
+kubectl expose deployment flask-app --name=flask-app --port=8000 --target-port=8000
+```
+
+Check that the pods are scheduled across the worker nodes:
+
+```bash
+kubectl get pods -o wide
+kubectl get deployment,service flask-app
+kubectl rollout status deployment/flask-app
+```
+
+### 4. Access the service
+
+The kind config declares no host port mappings, so reach the service through a port-forward:
+
+```bash
+kubectl port-forward service/flask-app 8000:8000
+```
+
+Then, in a second terminal:
+
+```bash
+curl http://localhost:8000/
+curl http://localhost:8000/items
+```
+
+### 5. Scaling and self-healing
+
+```bash
+# Scale out, then back in
+kubectl scale deployment flask-app --replicas=5
+kubectl get pods -w
+
+# Delete a pod and watch the ReplicaSet recreate it
+kubectl delete pod <pod-name>
+kubectl get pods
+```
+
+### 6. Inspect and troubleshoot
+
+```bash
+kubectl logs -l app=flask-app --tail=50
+kubectl describe deployment flask-app
+kubectl describe pod <pod-name>
+kubectl exec -it <pod-name> -- /bin/sh
+kubectl get events --sort-by=.lastTimestamp
+```
+
+### 7. Tear down
+
+```bash
+kubectl delete service flask-app
+kubectl delete deployment flask-app
+kind delete cluster --name msc-de1
+```
+
 ## Application Routes
 
 The application provides the following routes:
