@@ -1,7 +1,7 @@
 services:
   flask-app:
     build: .
-    image: msc-de1-flask-app:1.0.0
+    image: abedadounkpe/msc-de1-flask-app:1.0.0
     container_name: msc-de1-flask-app
     restart: unless-stopped
 
